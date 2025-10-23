@@ -6211,6 +6211,27 @@ class Sheet(tk.Frame):
                 self.MT._row_index[r] = not self.MT._row_index[r]
         return self
 
+    def toggle_index_checkbox(self, r: int, checked: bool) -> Sheet:
+        kwargs = self.RI.get_cell_kwargs(r, key="checkbox")
+        if kwargs:
+            if not isinstance(self.MT._row_index[r], bool):
+                if checked is None:
+                    self.MT._row_index[r] = False
+                else:
+                    self.MT._row_index[r] = bool(checked)
+            else:
+                self.MT._row_index[r] = not self.MT._row_index[r]
+            
+        # TODO: change parameter of `check_function` to `event_data` as in RowIndex.click_checkbox
+        # NOTE: the parameter is custom made for my use case
+        if kwargs["check_function"] is not None:
+            kwargs["check_function"]({ 'value': checked, 'row': r })
+            
+        return self
+                
+
+
+
     def get_checkboxes(self) -> dict:
         return {
             **{k: v["checkbox"] for k, v in self.MT.cell_options.items() if "checkbox" in v},
